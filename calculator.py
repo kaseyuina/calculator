@@ -1,4 +1,3 @@
-import math
 import sys
 
 equation_list = []
@@ -10,20 +9,26 @@ print("Please type in the equation which you would like to calculate.")
 print("(Available operators are: ")
 print("Addition: +, Subtraction: -, Multiplication: *, Division: /)")
 print("You may also use parentheses.")
-# equation = (input(": "))
-print()
+equation = (input(": "))
 
 #Unit test case 1
-equation = "(1+1.25-23)/2*4"
+# equation = "(1+1.25-23)/2*4"
 # equation = "(1 + 1.25 - 23) / 2 * 4 "
 # equation = "1 + x + 5"
 
 #Unit test case 2
-# equation = "5*4"
+# equation = "2.5+34"
+# equation = "54-13.4"
+# equation = "5.123*23"
 # equation = "15/3"
-# equation = ""
-
-
+# equation = "15/3.333"
+# equation = "15/0"
+# equation = "5+6-1"
+# equation = "5+3*6"
+# equation = "9*(1+3)"
+# equation = "10/(1-1)"
+# equation = "(1+((2+3)*(4*5)))"
+ 
 print()
 # print("equation is: " + equation)
 
@@ -35,6 +40,7 @@ for x, i in enumerate(equation):
             if not i == " ":
                 if operators.find(i) < 0:
                     print("The equation contains invalid character(s).")
+                    print()
                     sys.exit()
     #Storing in the list
     if operators.find(i) >= 0:
@@ -47,7 +53,7 @@ for x, i in enumerate(equation):
         if not i == " ":
             temp = temp + i
     #Operation for the last letter
-    if x + 1 == len(equation):
+    if x + 1 == len(equation) and not operators.find(i) >= 0:
         equation_list.append(temp)
 
 # print(equation_list)
@@ -93,7 +99,7 @@ def infix_to_postfix(infix):
     return postfix
 
 
-print(infix_to_postfix(equation_list))
+# print(infix_to_postfix(equation_list))
 
 def RPN(states):
     operator = {
@@ -103,67 +109,18 @@ def RPN(states):
         '/': (lambda x, y: float(x) / float(y))
     }
     stack = []
-    # print('RPN: %s' % states)
-    for index, z  in enumerate(states):
-        # if index > 0:
-            # print(stack)
+    for z in states:
         if z not in operator.keys():
             stack.append(z)
             continue
         y = stack.pop()
         x = stack.pop()
+        if float(y) == 0 and z == "/":
+            print("Division by 0 not allowed.")
+            print()
+            sys.exit()
         stack.append(operator[z](x, y))
-        # print('%s %s %s =' % (x, z, y))
-    # print(stack[0])
     return stack[0]
 
-# print(RPN(infix_to_postfix(equation_list)))
-
-'''
-def test():
-    print("OK" if RPN("37+621-*+") == 16 else "NG")
-
-if __name__ == '__main__':
-    import sys
-    RPN(sys.argv[1])
-    test()
-'''
-
-
-
-
-
-
-
-'''
-def calc(num1, num2, operator):
-    if operator == "+":
-        return num1 + num2
-    elif operator == "-":
-        return num1 - num2
-    elif operator == "*":
-        return num1 * num2
-    elif operator == "/":
-        if num2 == 0:
-            print("Can't divide with 0")
-            sys.exit()
-        else:
-            return num1 / num2
-
-
-
-for i in range(len(equation_list)):
-    print(equation_list)
-    if equation_list[i] == "*" or equation_list[i] == "/":
-        # print(calc(float(equation_list[i-1]), float(equation_list[i+1]), equation_list[i]))
-        equation_list[i-1] = calc(float(equation_list[i-1]), float(equation_list[i+1]), equation_list[i])
-        equation_list.pop(i)
-        equation_list.pop(i)
-        i -= 1
-
-# for i in range(len(equation_list)):
-#     if equation_list[i] == "+" or equation_list[i] == "-":
-#         print(calc(float(equation_list[i-1]), float(equation_list[i+1]), equation_list[i]))
-
-print(equation_list)
-'''
+print("The answer is: " + str(RPN(infix_to_postfix(equation_list))))
+print()
